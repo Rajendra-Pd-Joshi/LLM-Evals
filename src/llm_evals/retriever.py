@@ -36,9 +36,7 @@ def load_transcripts():
 
 # 2. BUILD ---- chunk, embed once, and keep it on disk so we don't re-embed
 def load_store():
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small",
-                                  api_key = os.getenv("OPENROUTER_API_KEY"),
-                                  base_url = "https://openrouter.ai/api/v1")
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     if os.path.exists(DB_DIR):
         return Chroma(persist_directory=DB_DIR, embedding_function=embeddings)

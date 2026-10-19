@@ -1,15 +1,14 @@
 import os
 import re
 import glob
-import time
 
 from dotenv import load_dotenv
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
-load_dotenv()  # loads GOOGLE_API_KEY from .env
+load_dotenv()  # loads OPENAI_API_KEY from .env
 
 DATA_DIR = "data"
 DB_DIR = "chroma_store"
@@ -37,7 +36,9 @@ def load_transcripts():
 
 # 2. BUILD ---- chunk, embed once, and keep it on disk so we don't re-embed
 def load_store():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small",
+                                  api_key = os.getenv("OPENROUTER_API_KEY"),
+                                  base_url = "https://openrouter.ai/api/v1")
 
     if os.path.exists(DB_DIR):
         return Chroma(persist_directory=DB_DIR, embedding_function=embeddings)
@@ -49,16 +50,7 @@ def load_store():
         chunk_overlap=150,
     ).split_documents(docs)
 
-    store = Chroma(persist_directory=DB_DIR, embedding_function=embeddings)
-
-    # free tier allows ~100 embed requests per minute, so go in small batches
-    batch_size = 50
-    for i in range(0, len(chunks), batch_size):
-        store.add_documents(chunks[i : i + batch_size])
-        print(f"Embedded {min(i + batch_size, len(chunks))}/{len(chunks)}")
-        time.sleep(30)
-
-    return store
+    return Chroma.from_documents(chunks, embeddings, persist_directory=DB_DIR)
 
 
 def build_retriever():
@@ -71,7 +63,6 @@ if __name__ == "__main__":
     retriever = build_retriever()
 
     results = retriever.invoke("what is regression testing?")
-    print("Results found:", len(results))
-
+    
     for r in results:
         print(f"[Session {r.metadata['session']}] {r.page_content[:150]}...\n")

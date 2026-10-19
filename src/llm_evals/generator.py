@@ -1,5 +1,5 @@
 """
-src/generator.py — the GENERATOR component.
+src/llm_evals/generator.py — the GENERATOR component.
 
 Given a query and context (retrieved chunks), produce an answer grounded in
 the context. The prompt is faithfulness-first: answer ONLY from the context,

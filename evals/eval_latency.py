@@ -28,8 +28,8 @@ import math
 import time
 from dotenv import load_dotenv
 
-from src.rag_pipeline import RagPipeline
-from src.generator import generate, generate_stream   # generate_stream: the streaming twin
+from src.llm_evals.rag_pipeline import RagPipeline
+from src.llm_evals.generator import generate, generate_stream   # generate_stream: the streaming twin
 
 load_dotenv()
 

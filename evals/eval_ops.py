@@ -44,7 +44,7 @@ from dotenv import load_dotenv
 from src.llm_evals.rag_pipeline import RagPipeline
 from src.llm_evals.generator import generate, generate_stream, prompt, llm
 
-load_dotenv()
+load_dotenv() 
 
 # COST reads token usage off the AIMessage, so it composes prompt | llm directly
 # and stops BEFORE the StrOutputParser() that generate() uses (which discards

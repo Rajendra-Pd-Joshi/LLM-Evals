@@ -32,7 +32,7 @@ from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 from deepeval.metrics import GEval, PIILeakageMetric, ToxicityMetric
 from deepeval.metrics.g_eval import Rubric
 
-from src.rag_pipeline import RagPipeline
+from src.llm_evals.rag_pipeline import RagPipeline
 
 load_dotenv()
 
